@@ -110,20 +110,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="AddTask.aspx" />
+    <Content Include="AddTasks.aspx" />
     <Content Include="AddTrip.aspx" />
     <Content Include="AddUser.aspx" />
     <Content Include="ApiLogin.aspx" />
+    <Content Include="ApiTask.aspx" />
     <Content Include="ApiTrip.aspx" />
     <Content Include="Web.config" />
-    <Content Include="ApiTask.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AddTask.aspx.cs">
-      <DependentUpon>AddTask.aspx</DependentUpon>
+    <Compile Include="AddTasks.aspx.cs">
+      <DependentUpon>AddTasks.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="AddTask.aspx.designer.cs">
-      <DependentUpon>AddTask.aspx</DependentUpon>
+    <Compile Include="AddTasks.aspx.designer.cs">
+      <DependentUpon>AddTasks.aspx</DependentUpon>
     </Compile>
     <Compile Include="AddTrip.aspx.cs">
       <DependentUpon>AddTrip.aspx</DependentUpon>
@@ -145,6 +146,13 @@
     </Compile>
     <Compile Include="ApiLogin.aspx.designer.cs">
       <DependentUpon>ApiLogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ApiTask.aspx.cs">
+      <DependentUpon>ApiTask.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ApiTask.aspx.designer.cs">
+      <DependentUpon>ApiTask.aspx</DependentUpon>
     </Compile>
     <Compile Include="ApiTrip.aspx.cs">
       <DependentUpon>ApiTrip.aspx</DependentUpon>
@@ -177,12 +185,6 @@
     <Compile Include="Tasks.cs" />
     <Compile Include="Trip.cs" />
     <Compile Include="User.cs" />
-    <Compile Include="ApiTask.aspx.cs">
-      <DependentUpon>ApiTask.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="ApiTask.aspx.designer.cs">
-      <DependentUpon>ApiTask.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

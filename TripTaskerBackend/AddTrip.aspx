@@ -22,6 +22,7 @@
                     <asp:BoundField DataField="TripId" HeaderText="ID" />
                     <asp:BoundField DataField="Title" HeaderText="Título" />
                     <asp:ButtonField Text="Selecionar" CommandName="Select" />
+                    <asp:ButtonField ButtonType="Link" CommandName="AddTasks" Text="Acessar viagem" />
                 </Columns>
             </asp:GridView>
         </div>

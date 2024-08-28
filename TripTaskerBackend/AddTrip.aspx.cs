@@ -37,6 +37,16 @@ namespace TripTaskerBackend
 
             btnEdit.Enabled = true;
             btnDelete.Enabled = true;
+
+        }
+
+        protected void GridViewTrips_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "AddTasks")
+            {
+                int tripId = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"AddTasks.aspx?TripId={tripId}");
+            }
         }
 
         protected async void BtnEdit_Click(object sender, EventArgs e)

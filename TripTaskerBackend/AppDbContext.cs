@@ -19,7 +19,6 @@ namespace TripTaskerBackend
             modelBuilder.Entity<TaskItem>()
                 .HasKey(t => t.TaskId);
 
-            // Configura a relação com a entidade Trip (se existir)
             modelBuilder.Entity<TaskItem>()
                 .HasRequired(t => t.Trip)
                 .WithMany(tr => tr.TaskItems)
