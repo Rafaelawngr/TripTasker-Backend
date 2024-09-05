@@ -1,37 +1,45 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddTasks.aspx.cs" Inherits="TripTaskerBackend.AddTasks" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="AddTasks.aspx.cs" Inherits="TripTaskerBackend.AddTasks" Async="true" %>
 
 <!DOCTYPE html>
-
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title>Tarefas</title>
+<html>
+<head>
+    <title>Adicionar Tarefas</title>
 </head>
 <body>
     <form id="form1" runat="server">
         <div>
-            <h2>Tarefas para Viagem</h2>
-            <asp:Label ID="lblError" runat="server" ForeColor="Red" Visible="False" />
-            <asp:Label ID="lblTripTitle" runat="server" />
-            <asp:GridView ID="GridViewTasks" runat="server" AutoGenerateColumns="False">
+            <h2>Adicionar Tarefa</h2>
+            <asp:HiddenField ID="hfSelectedTripId" runat="server" />
+            
+            <label for="txtTaskTitle">Título:</label>
+            <input type="text" id="txtTaskTitle" runat="server" />
+
+            <label for="txtTaskDescription">Descrição:</label>
+            <input type="text" id="txtTaskDescription" runat="server" />
+
+            <label for="txtDueDate">Data de Vencimento:</label>
+            <input type="date" id="txtDueDate" runat="server" />
+
+            <label for="ddlStatus">Status:</label>
+            <asp:DropDownList ID="ddlStatus" runat="server">
+                <asp:ListItem Value="0">A Fazer</asp:ListItem>
+                <asp:ListItem Value="1">Fazendo</asp:ListItem>
+                <asp:ListItem Value="2">Completo</asp:ListItem>
+            </asp:DropDownList>
+
+            <asp:Button ID="btnCreateTask" runat="server" Text="Criar Tarefa" OnClick="btnCreateTask_Click" />
+        </div>
+
+        <div>
+            <h2>Tarefas</h2>
+            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False">
                 <Columns>
-                    <asp:BoundField DataField="TaskId" HeaderText="ID" />
                     <asp:BoundField DataField="Title" HeaderText="Título" />
                     <asp:BoundField DataField="Description" HeaderText="Descrição" />
-                    <asp:BoundField DataField="DueDate" HeaderText="Data de Vencimento" DataFormatString="{0:dd/MM/yyyy}" />
                     <asp:BoundField DataField="Status" HeaderText="Status" />
-                    <asp:ButtonField ButtonType="Link" CommandName="EditTask" Text="Editar" />
-                    <asp:ButtonField ButtonType="Link" CommandName="DeleteTask" Text="Excluir" />
+                    <asp:BoundField DataField="DueDate" HeaderText="Data de Vencimento" />
                 </Columns>
             </asp:GridView>
-            <asp:TextBox ID="txtTitle" runat="server" Placeholder="Título" />
-            <asp:TextBox ID="txtDescription" runat="server" Placeholder="Descrição" />
-            <asp:TextBox ID="txtDueDate" runat="server" Placeholder="Data de Vencimento" />
-            <asp:DropDownList ID="ddlStatus" runat="server">
-                <asp:ListItem Value="Pending">Pendente</asp:ListItem>
-                <asp:ListItem Value="InProgress">Em Progresso</asp:ListItem>
-                <asp:ListItem Value="Completed">Concluída</asp:ListItem>
-            </asp:DropDownList>
-            <asp:Button ID="btnCreateTask" runat="server" Text="Adicionar Tarefa" OnClick="btnCreateTask_Click" />
         </div>
     </form>
 </body>

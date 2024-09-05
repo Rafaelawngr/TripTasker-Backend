@@ -17,14 +17,8 @@ namespace TripTaskerBackend
                 case "POST":
                     HandlePostRequest();
                     break;
-                case "PUT":
-                    HandlePutRequest();
-                    break;
-                case "DELETE":
-                    HandleDeleteRequest();
-                    break;
                 default:
-                    Response.StatusCode = 405; // Method Not Allowed
+                    Response.StatusCode = 405;
                     break;
             }
         }
@@ -52,7 +46,7 @@ namespace TripTaskerBackend
 
             if (string.IsNullOrEmpty(action))
             {
-                Response.StatusCode = 400; // Bad Request
+                Response.StatusCode = 400; 
                 Response.Write("Ação obrigatória não especificada");
                 return;
             }
@@ -64,7 +58,7 @@ namespace TripTaskerBackend
                     case "create":
                         if (string.IsNullOrEmpty(title))
                         {
-                            Response.StatusCode = 400; // Bad Request
+                            Response.StatusCode = 400; 
                             Response.Write("Campo de título obrigatório");
                             return;
                         }
@@ -72,14 +66,14 @@ namespace TripTaskerBackend
                         var trip = new Trip { Title = title };
                         context.Trips.Add(trip);
                         context.SaveChanges();
-                        Response.StatusCode = 201; // Created
+                        Response.StatusCode = 201; 
                         Response.Write("Viagem criada com sucesso");
                         break;
 
                     case "edit":
                         if (string.IsNullOrEmpty(tripId) || !int.TryParse(tripId, out int id))
                         {
-                            Response.StatusCode = 400; // Bad Request
+                            Response.StatusCode = 400; 
                             Response.Write("ID da viagem inválido");
                             return;
                         }
@@ -89,12 +83,12 @@ namespace TripTaskerBackend
                         {
                             tripToEdit.Title = title;
                             context.SaveChanges();
-                            Response.StatusCode = 200; // OK
+                            Response.StatusCode = 200; 
                             Response.Write("Viagem editada com sucesso");
                         }
                         else
                         {
-                            Response.StatusCode = 404; // Not Found
+                            Response.StatusCode = 404;
                             Response.Write("Viagem não encontrada");
                         }
                         break;
@@ -102,7 +96,7 @@ namespace TripTaskerBackend
                     case "delete":
                         if (string.IsNullOrEmpty(tripId) || !int.TryParse(tripId, out int deleteId))
                         {
-                            Response.StatusCode = 400; // Bad Request
+                            Response.StatusCode = 400; 
                             Response.Write("ID da viagem inválido");
                             return;
                         }
@@ -112,32 +106,22 @@ namespace TripTaskerBackend
                         {
                             context.Trips.Remove(tripToDelete);
                             context.SaveChanges();
-                            Response.StatusCode = 200; // OK
+                            Response.StatusCode = 200; 
                             Response.Write("Viagem excluída com sucesso");
                         }
                         else
                         {
-                            Response.StatusCode = 404; // Not Found
+                            Response.StatusCode = 404; 
                             Response.Write("Viagem não encontrada");
                         }
                         break;
 
                     default:
-                        Response.StatusCode = 400; // Bad Request
+                        Response.StatusCode = 400; 
                         Response.Write("Ação não reconhecida");
                         break;
                 }
             }
-        }
-
-        private void HandlePutRequest()
-        {
-            // Você pode adicionar lógica para PUT, se necessário
-        }
-
-        private void HandleDeleteRequest()
-        {
-            // A lógica para DELETE pode ser implementada aqui se necessário
         }
     }
 }

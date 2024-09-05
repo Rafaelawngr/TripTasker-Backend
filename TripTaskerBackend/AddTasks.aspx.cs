@@ -1,86 +1,129 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 namespace TripTaskerBackend
 {
-    public partial class AddTasks : System.Web.UI.Page
+    public partial class AddTasks : Page
     {
-        protected void Page_Load(object sender, EventArgs e)
+        protected async void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
             {
                 int tripId;
                 if (int.TryParse(Request.QueryString["TripId"], out tripId))
                 {
-                    LoadTasks(tripId);
+                    hfSelectedTripId.Value = tripId.ToString(); 
+                    await LoadTasks(tripId);
                 }
                 else
                 {
-                    lblError.Text = "ID da viagem inválido.";
-                    lblError.Visible = true;
+                    Response.Write("ID da viagem inválido.");
                 }
             }
         }
 
-        private void LoadTasks(int tripId)
+        protected async void btnCreateTask_Click(object sender, EventArgs e)
         {
-            using (var context = new AppDbContext())
-            {
-                var tasks = context.Tasks
-                                   .Where(t => t.TripId == tripId)
-                                   .ToList();
+            string title = txtTaskTitle.Value;
+            string description = txtTaskDescription.Value;
+            string dueDateStr = txtDueDate.Value;
+            string statusStr = ddlStatus.SelectedValue;
 
-                GridViewTasks.DataSource = tasks;
-                GridViewTasks.DataBind();
-
-                var trip = context.Trips.FirstOrDefault(t => t.TripId == tripId);
-                if (trip != null)
-                {
-                    lblTripTitle.Text = $"Tarefas para a Viagem: {trip.Title}";
-                }
-            }
-        }
-
-        protected void btnCreateTask_Click(object sender, EventArgs e)
-        {
             int tripId;
-            if (int.TryParse(Request.QueryString["TripId"], out tripId))
+            DateTime dueDate;
+            int status;
+
+            if (int.TryParse(hfSelectedTripId.Value, out tripId) &&
+                !string.IsNullOrEmpty(title) &&
+                !string.IsNullOrEmpty(description) &&
+                DateTime.TryParse(dueDateStr, out dueDate) &&
+                int.TryParse(statusStr, out status))
             {
-                var client = new HttpClient();
-                var content = new FormUrlEncodedContent(new[]
+                using (var client = new HttpClient())
                 {
-                    new KeyValuePair<string, string>("title", txtTitle.Text),
-                    new KeyValuePair<string, string>("description", txtDescription.Text),
-                    new KeyValuePair<string, string>("tripId", tripId.ToString()),
-                    new KeyValuePair<string, string>("status", ddlStatus.SelectedValue),
-                    new KeyValuePair<string, string>("dueDate", txtDueDate.Text)
-                });
+                    var values = new Dictionary<string, string>
+            {
+                { "Title", title },
+                { "Description", description },
+                { "DueDate", dueDate.ToString("yyyy-MM-dd") }, 
+                { "Status", status.ToString() },
+                { "TripId", tripId.ToString() }
+            };
 
-                var response = client.PostAsync("http://localhost:53626/ApiTasks.aspx", content).Result;
+                    var content = new FormUrlEncodedContent(values);
+                    var response = await client.PostAsync("http://localhost:53626/ApiTask.aspx", content);
 
-                if (response.IsSuccessStatusCode)
-                {
-                    LoadTasks(tripId);
-                    ClearFields();
+                    if (response.IsSuccessStatusCode)
+                    {
+                        Response.Write("Tarefa criada com sucesso.");
+                        await LoadTasks(tripId);
+                    }
+                    else
+                    {
+                        Response.Write("Falha ao criar tarefa.");
+                    }
                 }
-                else
-                {
-                    lblError.Text = $"Erro ao criar tarefa. Status: {response.StatusCode}, Detalhes: {response.Content.ReadAsStringAsync().Result}";
-                    lblError.Visible = true;
-                }
+            }
+            else
+            {
+                Response.Write("Erro: Dados inválidos para criação da tarefa.");
             }
         }
 
-        private void ClearFields()
+
+        private async Task LoadTasks(int tripId)
         {
-            txtTitle.Text = "";
-            txtDescription.Text = "";
-            txtDueDate.Text = "";
-            ddlStatus.SelectedIndex = 0;
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var response = await client.GetAsync($"http://localhost:53626/ApiTask.aspx?TripId={tripId}");
+                    string responseBody = await response.Content.ReadAsStringAsync();
+
+
+                    if (response.IsSuccessStatusCode)
+                    {
+             
+                        if (response.Content.Headers.ContentType.MediaType == "application/json")
+                        {
+                          
+                            var tasks = JsonConvert.DeserializeObject<List<TaskItem>>(responseBody);
+
+                            gvTasks.DataSource = tasks;
+                            gvTasks.DataBind();
+                        }
+                        else
+                        {
+                            Response.Write($"Erro: Conteúdo retornado não é JSON.");
+                        }
+                    }
+                    else
+                    {
+                        Response.Write($"Erro ao carregar tarefas. Status: {response.StatusCode}");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Response.Write($"Erro ao carregar tarefas: {ex.Message}");
+            }
         }
+
+
+        protected void GridViewTrips_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "AddTasks")
+            {
+                int tripId = Convert.ToInt32(e.CommandArgument);
+                Response.Redirect($"AddTasks.aspx?TripId={tripId}");
+            }
+        }
+
     }
 }

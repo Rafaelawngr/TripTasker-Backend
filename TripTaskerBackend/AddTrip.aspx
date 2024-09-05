@@ -17,18 +17,22 @@
         </div>
 
         <div>
-            <asp:GridView ID="GridViewTrips" runat="server" AutoGenerateColumns="false" OnSelectedIndexChanged="GridViewTrips_SelectedIndexChanged">
+            <asp:GridView ID="GridViewTrips" runat="server" AutoGenerateColumns="false" OnSelectedIndexChanged="GridViewTrips_SelectedIndexChanged" OnRowCommand="GridViewTrips_RowCommand">
                 <Columns>
                     <asp:BoundField DataField="TripId" HeaderText="ID" />
                     <asp:BoundField DataField="Title" HeaderText="Título" />
                     <asp:ButtonField Text="Selecionar" CommandName="Select" />
-                    <asp:ButtonField ButtonType="Link" CommandName="AddTasks" Text="Acessar viagem" />
+                    <asp:TemplateField>
+                        <ItemTemplate>
+                            <asp:LinkButton ID="lnkAddTasks" runat="server" CommandName="AddTasks" CommandArgument='<%# Eval("TripId") %>' Text="Tarefas" />
+                        </ItemTemplate>
+                    </asp:TemplateField>
                 </Columns>
             </asp:GridView>
         </div>
 
-        <!-- Campo escondido para armazenar o TripId selecionado -->
-       <asp:HiddenField ID="hfSelectedTripId" runat="server" />
+        <!-- armazenar o TripId selecionado -->
+        <asp:HiddenField ID="hfSelectedTripId" runat="server" />
     </form>
 </body>
 </html>

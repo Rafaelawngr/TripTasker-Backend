@@ -28,11 +28,11 @@ namespace TripTaskerBackend
 
         protected void GridViewTrips_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // Captura o TripId da linha selecionada no GridView
+          
             GridViewRow selectedRow = GridViewTrips.SelectedRow;
             string tripId = selectedRow.Cells[0].Text;
 
-            // Armazena o TripId no HiddenField para uso posterior
+          
             hfSelectedTripId.Value = tripId;
 
             btnEdit.Enabled = true;
@@ -65,7 +65,7 @@ namespace TripTaskerBackend
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadTrips(); // Atualiza a lista de viagens na página
+                    LoadTrips(); 
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace TripTaskerBackend
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadTrips(); // Atualiza a lista de viagens na página
+                    LoadTrips(); 
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace TripTaskerBackend
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadTrips(); // Atualiza a lista de viagens na página
+                    LoadTrips(); 
                 }
                 else
                 {

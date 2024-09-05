@@ -10,6 +10,7 @@ namespace TripTaskerBackend
     {
         public int TripId { get; set; }
         public string Title { get; set; }
-        public ICollection<TaskItem> TaskItems { get; set; }
+
+        public virtual ICollection<TaskItem> TaskItems { get; set; }
     }
 }

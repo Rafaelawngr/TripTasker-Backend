@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ApiTask.aspx.cs" Inherits="TripTaskerBackend.ApiTask" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ApiTask.aspx.cs" Inherits="TripTaskerBackend.ApiTask" Async="true"  %>
+
 
 <!DOCTYPE html>
 
