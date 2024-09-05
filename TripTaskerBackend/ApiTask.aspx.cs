@@ -65,28 +65,33 @@ namespace TripTaskerBackend
             else
             {
                 Response.StatusCode = 400;
-                Response.Clear(); // Limpa qualquer conteúdo anterior
+                Response.Clear(); 
                 Response.Write("Id da viagem inválido");
-                Response.End(); // Encerra a resposta
+                Response.End(); 
             }
         }
 
         private async Task HandlePostRequestAsync()
         {
             string title = Request.Form["Title"];
+            string description = Request.Form["Description"];
+            string dueDateStr = Request.Form["DueDate"];
             int tripId;
+            DateTime dueDate;
 
-     
-            if (int.TryParse(Request.Form["TripId"], out tripId) && !string.IsNullOrEmpty(title))
+            if (int.TryParse(Request.Form["TripId"], out tripId) &&
+                DateTime.TryParse(dueDateStr, out dueDate) &&
+                !string.IsNullOrEmpty(title))
             {
                 using (var context = new AppDbContext())
                 {
                     var task = new TaskItem
                     {
                         Title = title,
+                        Description = description,
                         TripId = tripId,
-                        Status = TaskProgress.ToDo,
-                        DueDate = DateTime.Now
+                        Status = TaskProgress.ToDo, 
+                        DueDate = dueDate 
                     };
                     context.Tasks.Add(task);
                     await context.SaveChangesAsync();
@@ -100,5 +105,6 @@ namespace TripTaskerBackend
                 Response.Write("Dados inválidos para criação da tarefa.");
             }
         }
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -84,28 +85,29 @@ namespace TripTaskerBackend
                 using (var client = new HttpClient())
                 {
                     var response = await client.GetAsync($"http://localhost:53626/ApiTask.aspx?TripId={tripId}");
-                    string responseBody = await response.Content.ReadAsStringAsync();
 
+                    string responseBody = await response.Content.ReadAsStringAsync();
 
                     if (response.IsSuccessStatusCode)
                     {
+                        var serializer = new JavaScriptSerializer();
+                        var tasks = serializer.Deserialize<List<TaskItem>>(responseBody);
 
-                        if (response.Content.Headers.ContentType.MediaType == "application/json")
+                        var orderedTasks = tasks.OrderBy(t => t.DueDate).ToList();
+
+                        gvTasks.DataSource = orderedTasks.Select(t => new
                         {
+                            t.Title,
+                            t.Description,
+                            DueDate = t.DueDate.ToString("dd-MM-yyyy"),
+                            Status = TaskHelpers.GetTaskStatusString(t.Status)
+                        }).ToList();
 
-                            var tasks = JsonConvert.DeserializeObject<List<TaskItem>>(responseBody);
-
-                            gvTasks.DataSource = tasks;
-                            gvTasks.DataBind();
-                        }
-                        else
-                        {
-                            Response.Write($"Erro: Conteúdo retornado não é JSON.");
-                        }
+                        gvTasks.DataBind();
                     }
                     else
                     {
-                        Response.Write($"Erro ao carregar tarefas. Status: {response.StatusCode}");
+                        Response.Write($"Erro ao carregar tarefas: {response.StatusCode}, Detalhes: {responseBody}");
                     }
                 }
             }
