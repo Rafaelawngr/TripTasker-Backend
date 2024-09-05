@@ -9,7 +9,7 @@ using System.Web.UI.WebControls;
 
 namespace TripTaskerBackend
 {
-    public partial class AddTasks : Page
+    public partial class AddTasks : System.Web.UI.Page
     {
         protected async void Page_Load(object sender, EventArgs e)
         {
@@ -18,7 +18,7 @@ namespace TripTaskerBackend
                 int tripId;
                 if (int.TryParse(Request.QueryString["TripId"], out tripId))
                 {
-                    hfSelectedTripId.Value = tripId.ToString(); 
+                    hfSelectedTripId.Value = tripId.ToString();
                     await LoadTasks(tripId);
                 }
                 else
@@ -51,7 +51,7 @@ namespace TripTaskerBackend
             {
                 { "Title", title },
                 { "Description", description },
-                { "DueDate", dueDate.ToString("yyyy-MM-dd") }, 
+                { "DueDate", dueDate.ToString("yyyy-MM-dd") },
                 { "Status", status.ToString() },
                 { "TripId", tripId.ToString() }
             };
@@ -89,10 +89,10 @@ namespace TripTaskerBackend
 
                     if (response.IsSuccessStatusCode)
                     {
-             
+
                         if (response.Content.Headers.ContentType.MediaType == "application/json")
                         {
-                          
+
                             var tasks = JsonConvert.DeserializeObject<List<TaskItem>>(responseBody);
 
                             gvTasks.DataSource = tasks;
@@ -125,5 +125,20 @@ namespace TripTaskerBackend
             }
         }
 
+        protected void gvTasks_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "EditTask")
+            {
+                // Lógica para editar a tarefa
+                int taskId = Convert.ToInt32(e.CommandArgument);
+                // Exemplo: Carregar a tarefa e permitir edição
+            }
+            else if (e.CommandName == "DeleteTask")
+            {
+                // Lógica para excluir a tarefa
+                int taskId = Convert.ToInt32(e.CommandArgument);
+                // Exemplo: Excluir a tarefa e atualizar a lista
+            }
+        }
     }
-}
+    }

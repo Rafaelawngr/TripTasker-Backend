@@ -49,6 +49,38 @@ namespace TripTaskerBackend
             }
         }
 
+        protected async void BtnCreate_Click(object sender, EventArgs e)
+        {
+            var client = new HttpClient();
+            var content = new FormUrlEncodedContent(new[]
+            {
+        new KeyValuePair<string, string>("Action", "create"),
+        new KeyValuePair<string, string>("Title", txtTitle.Text)
+    });
+
+            try
+            {
+                var response = await client.PostAsync("http://localhost:53626/ApiTrip.aspx", content);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    LoadTrips();
+                }
+                else
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    lblError.Text = $"Erro ao criar a viagem. Status: {response.StatusCode}, Detalhes: {responseBody}";
+                    lblError.Visible = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                lblError.Text = $"Erro de comunicação: {ex.Message}";
+                lblError.Visible = true;
+            }
+        }
+
+
         protected async void BtnEdit_Click(object sender, EventArgs e)
         {
             var client = new HttpClient();
@@ -82,37 +114,7 @@ namespace TripTaskerBackend
         }
 
 
-        protected async void BtnCreate_Click(object sender, EventArgs e)
-        {
-            var client = new HttpClient();
-            var content = new FormUrlEncodedContent(new[]
-            {
-        new KeyValuePair<string, string>("Action", "create"),
-        new KeyValuePair<string, string>("Title", txtTitle.Text)
-    });
-
-            try
-            {
-                var response = await client.PostAsync("http://localhost:53626/ApiTrip.aspx", content);
-
-                if (response.IsSuccessStatusCode)
-                {
-                    LoadTrips(); 
-                }
-                else
-                {
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    lblError.Text = $"Erro ao criar a viagem. Status: {response.StatusCode}, Detalhes: {responseBody}";
-                    lblError.Visible = true;
-                }
-            }
-            catch (Exception ex)
-            {
-                lblError.Text = $"Erro de comunicação: {ex.Message}";
-                lblError.Visible = true;
-            }
-        }
-
+        
 
         protected async void BtnDelete_Click(object sender, EventArgs e)
         {

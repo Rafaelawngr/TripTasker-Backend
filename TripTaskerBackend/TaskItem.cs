@@ -12,5 +12,24 @@ namespace TripTaskerBackend
         public DateTime DueDate { get; set; }
         public int TripId { get; set; }
         public Trip Trip { get; set; }
+
+
+    }
+    public static class TaskHelpers
+    {
+        public static string GetTaskStatusString(TaskProgress status)
+        {
+            switch (status)
+            {
+                case TaskProgress.ToDo:
+                    return "A Fazer";
+                case TaskProgress.InProgress:
+                    return "Fazendo";
+                case TaskProgress.Done:
+                    return "Completo";
+                default:
+                    return "Desconhecido";
+            }
+        }
     }
 }

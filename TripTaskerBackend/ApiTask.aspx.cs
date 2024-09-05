@@ -5,6 +5,7 @@ using System.Web.Script.Serialization;
 using System.Web.UI;
 using System.Data.Entity;
 using static TripTaskerBackend.Tasks;
+using static TripTaskerBackend.TaskHelpers;
 using Newtonsoft.Json;
 
 namespace TripTaskerBackend
@@ -64,9 +65,9 @@ namespace TripTaskerBackend
             else
             {
                 Response.StatusCode = 400;
-                Response.Clear(); 
+                Response.Clear(); // Limpa qualquer conteúdo anterior
                 Response.Write("Id da viagem inválido");
-                Response.End(); 
+                Response.End(); // Encerra a resposta
             }
         }
 
