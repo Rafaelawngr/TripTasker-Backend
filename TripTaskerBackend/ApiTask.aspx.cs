@@ -24,12 +24,18 @@ namespace TripTaskerBackend
                     case "POST":
                         await HandlePostRequestAsync();
                         break;
+                    case "PUT":
+                        await HandlePutRequestAsync();
+                        break;
+                    case "DELETE":
+                        await HandleDeleteRequestAsync();
+                        break;
                     default:
                         Response.StatusCode = 405;
                         break;
                 }
             }
-            
+
             catch (Exception ex)
             {
                 Response.StatusCode = 500;
@@ -53,21 +59,21 @@ namespace TripTaskerBackend
                                                  t.Status,
                                                  t.DueDate
                                              })
-                                             .ToListAsync(); 
+                                             .ToListAsync();
 
                     var json = new JavaScriptSerializer().Serialize(tasks);
                     Response.ContentType = "application/json";
-                    Response.Clear(); 
+                    Response.Clear();
                     Response.Write(json);
-                    Response.End(); 
+                    Response.End();
                 }
             }
             else
             {
                 Response.StatusCode = 400;
-                Response.Clear(); 
+                Response.Clear();
                 Response.Write("Id da viagem inválido");
-                Response.End(); 
+                Response.End();
             }
         }
 
@@ -90,8 +96,8 @@ namespace TripTaskerBackend
                         Title = title,
                         Description = description,
                         TripId = tripId,
-                        Status = TaskProgress.ToDo, 
-                        DueDate = dueDate 
+                        Status = TaskProgress.ToDo,
+                        DueDate = dueDate
                     };
                     context.Tasks.Add(task);
                     await context.SaveChangesAsync();
@@ -103,6 +109,68 @@ namespace TripTaskerBackend
             {
                 Response.StatusCode = 400;
                 Response.Write("Dados inválidos para criação da tarefa.");
+            }
+        }
+
+        protected async Task HandleDeleteRequestAsync()
+        {
+            int taskId;
+            if (int.TryParse(Request.QueryString["taskId"], out taskId))
+            {
+                using (var context = new AppDbContext())
+                {
+                    var task = await context.Tasks.FindAsync(taskId);
+                    if (task != null)
+                    {
+                        context.Tasks.Remove(task);
+                        await context.SaveChangesAsync();
+                        Response.StatusCode = 200;
+                        Response.Write("Tarefa excluída com sucesso.");
+                    }
+                    else
+                    {
+                        Response.StatusCode = 404;
+                        Response.Write("Tarefa não encontrada.");
+                    }
+                }
+            }
+            else
+            {
+                Response.StatusCode = 400;
+                Response.Write("ID de tarefa inválido.");
+            }
+        }
+
+        protected async Task HandlePutRequestAsync()
+        {
+            int taskId;
+            if (int.TryParse(Request.Form["TaskId"], out taskId))
+            {
+                using (var context = new AppDbContext())
+                {
+                    var task = await context.Tasks.FindAsync(taskId);
+                    if (task != null)
+                    {
+                        task.Title = Request.Form["Title"];
+                        task.Description = Request.Form["Description"];
+                        task.Status = (TaskProgress)Enum.Parse(typeof(TaskProgress), Request.Form["Status"]);
+                        task.DueDate = DateTime.Parse(Request.Form["DueDate"]);
+
+                        await context.SaveChangesAsync();
+                        Response.StatusCode = 200;
+                        Response.Write("Tarefa atualizada com sucesso.");
+                    }
+                    else
+                    {
+                        Response.StatusCode = 404;
+                        Response.Write("Tarefa não encontrada.");
+                    }
+                }
+            }
+            else
+            {
+                Response.StatusCode = 400;
+                Response.Write("ID de tarefa inválido.");
             }
         }
 

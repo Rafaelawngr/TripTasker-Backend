@@ -10,7 +10,7 @@
         <div>
             <h2>Adicionar Tarefa</h2>
             <asp:HiddenField ID="hfSelectedTripId" runat="server" />
-            
+
             <label for="txtTaskTitle">Título:</label>
             <input type="text" id="txtTaskTitle" runat="server" />
 
@@ -31,16 +31,24 @@
         </div>
 
         <div>
-            <h2>Tarefas</h2>
-            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False">
+            <asp:GridView ID="gvTasks" runat="server" AutoGenerateColumns="False" DataKeyNames="TaskId" OnRowCommand="gvTasks_RowCommand">
                 <Columns>
                     <asp:BoundField DataField="Title" HeaderText="Título" />
                     <asp:BoundField DataField="Description" HeaderText="Descrição" />
                     <asp:BoundField DataField="Status" HeaderText="Status" />
-                    <asp:BoundField DataField="DueDate" HeaderText="Data de Vencimento" />
+                    <asp:BoundField DataField="DueDate" HeaderText="Data de Vencimento" DataFormatString="{0:dd/MM/yyyy}" />
+                    <asp:ButtonField CommandName="SelectTask" Text="Selecionar" ButtonType="Button" />
                 </Columns>
             </asp:GridView>
         </div>
+
+        <div>
+
+            <asp:Button ID="btnEditTask" runat="server" Text="Editar" OnClick="btnEditTask_Click" Visible="false" />
+            <asp:Button ID="btnDeleteTask" runat="server" Text="Excluir" OnClick="btnDeleteTask_Click" Visible="false" />
+        </div>
+
+        <asp:HiddenField ID="hfSelectedTaskId" runat="server" />
     </form>
 </body>
 </html>
