@@ -21,14 +21,14 @@ namespace TripTaskerBackend
         {
             switch (status)
             {
-                case TaskProgress.ToDo:
-                    return "A Fazer";
+                
                 case TaskProgress.InProgress:
                     return "Fazendo";
                 case TaskProgress.Done:
                     return "Completo";
+                case TaskProgress.ToDo:
                 default:
-                    return "Desconhecido";
+                    return "A Fazer"; 
             }
         }
     }
