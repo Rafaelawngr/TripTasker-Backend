@@ -27,7 +27,14 @@ namespace TripTaskerBackend
         {
             using (var context = new AppDbContext())
             {
-                var trips = context.Trips.ToList();
+                var trips = context.Trips
+                    .Select(t => new TripDto
+                    {
+                        TripId = t.TripId,
+                        Title = t.Title
+                    })
+                    .ToList();
+
                 var serializer = new JavaScriptSerializer();
                 var json = serializer.Serialize(trips);
 
@@ -37,6 +44,7 @@ namespace TripTaskerBackend
                 Response.End();
             }
         }
+
 
         private void HandlePostRequest()
         {

@@ -233,6 +233,7 @@
     <Compile Include="TaskItem.cs" />
     <Compile Include="Tasks.cs" />
     <Compile Include="Trip.cs" />
+    <Compile Include="TripDto.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
