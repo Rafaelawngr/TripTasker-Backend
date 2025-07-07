@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using static TripTaskerBackend.Tasks;
+using static TripTaskerBackend.TaskItem;
 
 namespace TripTaskerBackend
 {

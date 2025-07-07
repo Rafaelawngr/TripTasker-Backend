@@ -28,11 +28,11 @@ namespace TripTaskerBackend
 
         protected void GridViewTrips_SelectedIndexChanged(object sender, EventArgs e)
         {
-          
+
             GridViewRow selectedRow = GridViewTrips.SelectedRow;
             string tripId = selectedRow.Cells[0].Text;
 
-          
+
             hfSelectedTripId.Value = tripId;
 
             btnEdit.Enabled = true;
@@ -97,7 +97,7 @@ namespace TripTaskerBackend
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadTrips(); 
+                    LoadTrips();
                 }
                 else
                 {
@@ -114,7 +114,7 @@ namespace TripTaskerBackend
         }
 
 
-        
+
 
         protected async void BtnDelete_Click(object sender, EventArgs e)
         {
@@ -131,7 +131,7 @@ namespace TripTaskerBackend
 
                 if (response.IsSuccessStatusCode)
                 {
-                    LoadTrips(); 
+                    LoadTrips();
                 }
                 else
                 {

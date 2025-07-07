@@ -5,7 +5,7 @@ using System.Web;
 
 namespace TripTaskerBackend
 {
-    public class Tasks
+    public class TaskFilter
     {
         public enum TaskProgress
         {

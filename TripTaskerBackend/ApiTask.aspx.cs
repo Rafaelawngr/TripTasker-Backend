@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
-using System.Web.Script.Serialization;
 using System.Web.UI;
 using Newtonsoft.Json;
-using static TripTaskerBackend.Tasks;
+using static TripTaskerBackend.TaskItem;
+using static TripTaskerBackend.TaskFilter;
 
 namespace TripTaskerBackend
 {
@@ -28,12 +28,22 @@ namespace TripTaskerBackend
 
         private void HandleGetRequest()
         {
-            int tripId;
-            if (int.TryParse(Request.QueryString["TripId"], out tripId))
+            Response.ContentType = "application/json";
+            Response.Clear();
+
+            try
             {
+                string tripIdStr = Request.QueryString["TripId"];
+                if (!int.TryParse(tripIdStr, out int tripId))
+                {
+                    Response.StatusCode = 400;
+                    Response.Write("{\"error\": \"TripId inválido ou ausente\"}");
+                    return;
+                }
+
                 using (var context = new AppDbContext())
                 {
-                    var tasks = context.Tasks
+                    var tasks = context.TaskItems
                         .Where(t => t.TripId == tripId)
                         .Select(t => new
                         {
@@ -45,33 +55,31 @@ namespace TripTaskerBackend
                         })
                         .ToList();
 
-                    var json = new JavaScriptSerializer().Serialize(tasks);
-                    Response.ContentType = "application/json";
-                    Response.Clear();
+                    var json = JsonConvert.SerializeObject(tasks);
                     Response.Write(json);
-                    Response.End();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                Response.StatusCode = 400;
-                Response.Clear();
-                Response.Write("Id da viagem inválido");
+                Response.StatusCode = 500;
+                Response.Write("{\"error\": \"Erro no servidor: " + ex.ToString().Replace("\"", "'") + "\"}");
+            }
+            finally
+            {
                 Response.End();
             }
         }
 
         private void HandlePostRequest()
         {
-            string action = Request.Form["Action"]; 
+            string action = Request.Form["Action"];
 
             if (string.IsNullOrEmpty(action))
             {
-               
                 string title = Request.Form["Title"];
                 string description = Request.Form["Description"];
                 string dueDateStr = Request.Form["DueDate"];
-                var statusStr = Request.Form["Status"];
+                string statusStr = Request.Form["Status"];
                 int tripId;
                 DateTime dueDate;
                 int status;
@@ -93,7 +101,7 @@ namespace TripTaskerBackend
                                 Status = (TaskProgress)status,
                                 DueDate = dueDate
                             };
-                            context.Tasks.Add(task);
+                            context.TaskItems.Add(task);
                             context.SaveChanges();
                             Response.StatusCode = 201;
                             Response.Write("Tarefa criada com sucesso.");
@@ -107,18 +115,17 @@ namespace TripTaskerBackend
                 }
                 catch (Exception ex)
                 {
-                
                     Response.StatusCode = 500;
                     Response.Write($"Erro interno do servidor: {ex.Message}");
                 }
             }
             else if (action == "edit")
             {
-                HandleEditTask(); 
+                HandleEditTask();
             }
             else if (action == "delete")
             {
-                HandleDeleteTask(); 
+                HandleDeleteTask();
             }
             else
             {
@@ -126,7 +133,6 @@ namespace TripTaskerBackend
                 Response.Write("Ação não especificada.");
             }
         }
-
 
         private void HandleCreateTask()
         {
@@ -150,7 +156,7 @@ namespace TripTaskerBackend
                         Status = TaskProgress.ToDo,
                         DueDate = dueDate
                     };
-                    context.Tasks.Add(task);
+                    context.TaskItems.Add(task);
                     context.SaveChanges();
                     Response.StatusCode = 201;
                     Response.Write("Tarefa criada com sucesso.");
@@ -174,11 +180,10 @@ namespace TripTaskerBackend
             DateTime dueDate;
             int status;
 
-           
             if (!int.TryParse(Request.Form["TaskId"], out taskId) ||
                 string.IsNullOrEmpty(title) ||
                 !DateTime.TryParse(dueDateStr, out dueDate) ||
-                !int.TryParse(statusStr, out status)) 
+                !int.TryParse(statusStr, out status))
             {
                 Response.StatusCode = 400;
                 Response.Write("Dados inválidos para edição.");
@@ -187,7 +192,7 @@ namespace TripTaskerBackend
 
             using (var context = new AppDbContext())
             {
-                var task = context.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+                var task = context.TaskItems.FirstOrDefault(t => t.TaskId == taskId);
 
                 if (task == null)
                 {
@@ -199,14 +204,13 @@ namespace TripTaskerBackend
                 task.Title = title;
                 task.Description = description;
                 task.DueDate = dueDate;
-                task.Status = (TaskProgress)status; 
+                task.Status = (TaskProgress)status;
 
                 context.SaveChanges();
                 Response.StatusCode = 200;
                 Response.Write("Tarefa editada com sucesso.");
             }
         }
-
 
         private void HandleDeleteTask()
         {
@@ -221,7 +225,7 @@ namespace TripTaskerBackend
 
             using (var context = new AppDbContext())
             {
-                var task = context.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+                var task = context.TaskItems.FirstOrDefault(t => t.TaskId == taskId);
 
                 if (task == null)
                 {
@@ -230,7 +234,7 @@ namespace TripTaskerBackend
                     return;
                 }
 
-                context.Tasks.Remove(task);
+                context.TaskItems.Remove(task);
                 context.SaveChanges();
                 Response.StatusCode = 200;
                 Response.Write("Tarefa excluída com sucesso.");

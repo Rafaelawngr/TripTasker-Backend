@@ -9,6 +9,7 @@ namespace TripTaskerBackend
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+
             switch (Request.HttpMethod)
             {
                 case "GET":
@@ -54,7 +55,7 @@ namespace TripTaskerBackend
 
             if (string.IsNullOrEmpty(action))
             {
-                Response.StatusCode = 400; 
+                Response.StatusCode = 400;
                 Response.Write("Ação obrigatória não especificada");
                 return;
             }
@@ -66,7 +67,7 @@ namespace TripTaskerBackend
                     case "create":
                         if (string.IsNullOrEmpty(title))
                         {
-                            Response.StatusCode = 400; 
+                            Response.StatusCode = 400;
                             Response.Write("Campo de título obrigatório");
                             return;
                         }
@@ -74,14 +75,14 @@ namespace TripTaskerBackend
                         var trip = new Trip { Title = title };
                         context.Trips.Add(trip);
                         context.SaveChanges();
-                        Response.StatusCode = 201; 
+                        Response.StatusCode = 201;
                         Response.Write("Viagem criada com sucesso");
                         break;
 
                     case "edit":
                         if (string.IsNullOrEmpty(tripId) || !int.TryParse(tripId, out int id))
                         {
-                            Response.StatusCode = 400; 
+                            Response.StatusCode = 400;
                             Response.Write("ID da viagem inválido");
                             return;
                         }
@@ -91,7 +92,7 @@ namespace TripTaskerBackend
                         {
                             tripToEdit.Title = title;
                             context.SaveChanges();
-                            Response.StatusCode = 200; 
+                            Response.StatusCode = 200;
                             Response.Write("Viagem editada com sucesso");
                         }
                         else
@@ -104,7 +105,7 @@ namespace TripTaskerBackend
                     case "delete":
                         if (string.IsNullOrEmpty(tripId) || !int.TryParse(tripId, out int deleteId))
                         {
-                            Response.StatusCode = 400; 
+                            Response.StatusCode = 400;
                             Response.Write("ID da viagem inválido");
                             return;
                         }
@@ -114,18 +115,18 @@ namespace TripTaskerBackend
                         {
                             context.Trips.Remove(tripToDelete);
                             context.SaveChanges();
-                            Response.StatusCode = 200; 
+                            Response.StatusCode = 200;
                             Response.Write("Viagem excluída com sucesso");
                         }
                         else
                         {
-                            Response.StatusCode = 404; 
+                            Response.StatusCode = 404;
                             Response.Write("Viagem não encontrada");
                         }
                         break;
 
                     default:
-                        Response.StatusCode = 400; 
+                        Response.StatusCode = 400;
                         Response.Write("Ação não reconhecida");
                         break;
                 }

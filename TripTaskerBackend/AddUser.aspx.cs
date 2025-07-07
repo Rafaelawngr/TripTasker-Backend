@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 namespace TripTaskerBackend
 {
@@ -11,24 +7,46 @@ namespace TripTaskerBackend
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+           
+            if (Request.HttpMethod == "OPTIONS")
+            {
+                Response.StatusCode = 200;
+                Response.End();
+                return;
+            }
+
             if (Request.HttpMethod == "POST")
             {
                 string username = Request.Form["username"];
                 string password = Request.Form["password"];
 
-                using (var context = new AppDbContext())
+                if (!string.IsNullOrEmpty(username) && !string.IsNullOrEmpty(password))
                 {
-                    var user = new User
-                    {
-                        Username = username,
-                        Password = PasswordHelper.HashPassword(password)
-                    };
+                    string passwordHash = PasswordHelper.HashPassword(password);
 
-                    context.Users.Add(user);
-                    context.SaveChanges();
+                    using (var context = new AppDbContext())
+                    {
+                        var user = new User
+                        {
+                            Username = username,
+                            Password = passwordHash
+                        };
+
+                        context.Users.Add(user);
+                        context.SaveChanges();
+                    }
+
+                    Response.StatusCode = 200;
+                    Response.Write("User created successfully");
+                    Response.End();
+                }
+                else
+                {
+                    Response.StatusCode = 400;
+                    Response.Write("Username and password are required.");
+                    Response.End();
                 }
             }
-
         }
     }
 }

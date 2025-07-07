@@ -1,5 +1,5 @@
 ﻿using System;
-using static TripTaskerBackend.Tasks;
+using static TripTaskerBackend.TaskFilter;
 
 namespace TripTaskerBackend
 {

@@ -35,7 +35,7 @@ namespace TripTaskerBackend
             using (var context = new AppDbContext())
             {
 
-                var tasks = await context.Tasks
+                var tasks = await context.TaskItems
                     .Where(t => t.TripId == tripId)
                     .ToListAsync();
 
@@ -126,7 +126,7 @@ namespace TripTaskerBackend
 
                     using (var context = new AppDbContext())
                     {
-                        var task = context.Tasks.FirstOrDefault(t => t.TaskId == taskId);
+                        var task = context.TaskItems.FirstOrDefault(t => t.TaskId == taskId);
 
                         if (task != null)
                         {

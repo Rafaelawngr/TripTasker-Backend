@@ -10,7 +10,7 @@ namespace TripTaskerBackend
     public class AppDbContext : DbContext
     {
         public DbSet<User> Users { get; set; }
-        public DbSet<TaskItem> Tasks { get; set; }
+        public DbSet<TaskItem> TaskItems { get; set; }
         public DbSet<Trip> Trips { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
